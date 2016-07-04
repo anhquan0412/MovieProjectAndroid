@@ -47,7 +47,7 @@ public class ImageAdapter extends BaseAdapter {
             imageView = new ImageView(context);
             imageView.setAdjustViewBounds(true);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(3,3,3,3);
+            imageView.setPadding(0,0,0,0);
 
         }
         else {

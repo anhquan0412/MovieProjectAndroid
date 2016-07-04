@@ -3,9 +3,13 @@ package com.anhquan.movieproject;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,22 +34,53 @@ public class MovieFragment extends Fragment {
     private final String LOG_TAG = MovieFragment.class.getSimpleName();
 
     private ImageAdapter imageAdapter;
-    private String[] picUrls;
 
+    private View rootView;
     public MovieFragment() {
 
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.forecast_fragment, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id==R.id.action_refresh)
+        {
+            updateMovie();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         //execute asynctask
         updateMovie();
 
+        return rootView;
+    }
+
+    private void setUpImageAdapter(String[] picUrls)
+    {
         imageAdapter = new ImageAdapter(getActivity(), picUrls);
 
         GridView gridView = (GridView)rootView.findViewById(R.id.gridview);
@@ -58,9 +93,6 @@ public class MovieFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
             }
         });
-
-
-        return rootView;
     }
 
     private void updateMovie()
@@ -147,7 +179,7 @@ public class MovieFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String[] s) {
-            //Log.d(LOG_TAG, s);
+            setUpImageAdapter(s);
         }
 
 
@@ -158,7 +190,7 @@ public class MovieFragment extends Fragment {
 
             String picSize = "w185";
 
-            picUrls = new String[jsonMovieArray.length()];
+            String[] picUrls = new String[jsonMovieArray.length()];
             for(int i = 0; i< jsonMovieArray.length(); i++)
             {
                 JSONObject temp = jsonMovieArray.getJSONObject(i);
