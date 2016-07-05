@@ -1,4 +1,4 @@
-package com.anhquan.movieproject;
+package notuse;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -83,6 +83,9 @@ public class MovieFragment extends Fragment {
 
     private void setUpImageAdapter(String[] picUrls)
     {
+
+        // TODO: 7/5/2016 create MovieAdapter here
+        //movieAdapter = new MovieAdapter(getActivity(), movies)
         imageAdapter = new ImageAdapter(getActivity(), picUrls);
 
         GridView gridView = (GridView)rootView.findViewById(R.id.gridview);
@@ -214,6 +217,8 @@ public class MovieFragment extends Fragment {
 
         private String[] getPicURL(String JSONString) throws JSONException
         {
+            // TODO: 7/5/2016 return Movie array, not just url
+
             JSONObject jsonMovie = new JSONObject(JSONString);
             JSONArray jsonMovieArray = jsonMovie.getJSONArray("results");
 

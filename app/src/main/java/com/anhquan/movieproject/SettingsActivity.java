@@ -74,11 +74,8 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
                 //set summary
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
             }
-        } else if (preference instanceof NumberPickerPreference){
-
-            preference.setSummary(stringValue);
-
-        } else {
+        }
+        else {
             // For other preferences, set the summary to the value's simple string representation.
             preference.setSummary(stringValue);
         }
