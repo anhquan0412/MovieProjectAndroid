@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- entry -->
+    <string-array name="sort_options">
+        <item>Popular</item>
+        <item>Top Rated</item>
+    </string-array>
+
+    <!-- entry value -->
+    <string-array name="sort_values">
+        <item>popularity.desc</item>
+        <item>vote_average.desc vote_count.desc</item>
+    </string-array>
+
+
+</resources>

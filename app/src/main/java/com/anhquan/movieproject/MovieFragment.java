@@ -1,8 +1,10 @@
 package com.anhquan.movieproject;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -98,14 +100,30 @@ public class MovieFragment extends Fragment {
     private void updateMovie()
     {
         FetchMovieTask task = new FetchMovieTask();
-        task.execute("popular");
+
+        SharedPreferences sharedPreference = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+
+        String sortBy = sharedPreference.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_default));
+
+        int year = sharedPreference.getInt(getString(R.string.pref_year_key), 2016);
+
+
+
+        task.execute(sortBy, Integer.toString(year));
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateMovie();
     }
 
     public class FetchMovieTask extends AsyncTask<String, Void, String[]> {
 
         private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
 
-        private final String baseURL = "http://api.themoviedb.org/3";
+        private final String baseURL = "http://api.themoviedb.org/3/discover";
 
         private final String basePicURL = "http://image.tmdb.org/t/p";
         @Override
@@ -113,7 +131,6 @@ public class MovieFragment extends Fragment {
             if (params.length == 0)
                 return null;
 
-            String sortType = params[0];
             String mediaType = "movie";
 
             String movieJSONString = null;
@@ -122,13 +139,25 @@ public class MovieFragment extends Fragment {
 
 
 
-            //http://api.themoviedb.org/3/movie/popular?api_key=05c704e23132c50fbc4a3606ce907042
-            Uri builtUri = Uri.parse(baseURL).buildUpon()
-                    .appendEncodedPath(mediaType)
-                    .appendEncodedPath(sortType)
-                    .appendQueryParameter("api_key", BuildConfig.THE_MOVIE_DB_API_KEY)
-                    .build();
+            //http://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&
+            // sort_by=vote_count.desc&primary_release_year=2016&api_key=05c704e23132c50fbc4a3606ce907042
 
+
+            Uri.Builder uriBuilder = Uri.parse(baseURL).buildUpon()
+                    .appendEncodedPath(mediaType);
+
+
+            String[] sortArray = params[0].split(" ");
+            for(String s: sortArray)
+            {
+                uriBuilder.appendQueryParameter("sort_by",s);
+            }
+
+            uriBuilder.appendQueryParameter("primary_release_year",params[1])
+            .appendQueryParameter("api_key", BuildConfig.THE_MOVIE_DB_API_KEY);
+
+
+            Uri builtUri = uriBuilder.build();
 
             try {
 

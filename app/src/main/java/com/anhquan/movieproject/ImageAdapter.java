@@ -12,8 +12,8 @@ import com.squareup.picasso.Picasso;
  * Created by anhqu on 7/4/2016.
  */
 public class ImageAdapter extends BaseAdapter {
-    Context context;
-    String[] picUrls = null;
+    private Context context;
+    private String[] picUrls = null;
 
     public ImageAdapter(Context c,String[] s)
     {
