@@ -1,32 +1,27 @@
 package com.anhquan.movieproject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by anhqu on 7/5/2016.
  */
 public class Movie {
 
     private String title;
-    private String duration;
     private String vote;
     private String picUrl;
     private String summary;
+    private Date date;
 
-    public Movie(String t,String d, String v, String p, String s)
-    {
+    public Movie(String t, Date date, String v, String p, String s) {
         title = t;
-        duration= d;
+        this.date = date;
         vote = v;
         picUrl = p;
         summary = s;
     }
 
-    public String getDuration() {
-        return duration;
-    }
-
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
 
     public String getPicUrl() {
         return picUrl;
@@ -44,6 +39,14 @@ public class Movie {
         this.summary = summary;
     }
 
+    public void setDate(Date date)
+    {
+        this.date = date;
+    }
+    public Date getDate(){
+        return date;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -58,5 +61,12 @@ public class Movie {
 
     public void setVote(String vote) {
         this.vote = vote;
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+
+        return title + " " + format1.format(date) + " " + vote;
     }
 }

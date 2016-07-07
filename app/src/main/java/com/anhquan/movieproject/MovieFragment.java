@@ -26,6 +26,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -35,9 +39,10 @@ public class MovieFragment extends Fragment {
 
     private final String LOG_TAG = MovieFragment.class.getSimpleName();
 
-    private ImageAdapter imageAdapter;
+   //private ImageAdapter imageAdapter;
 
-    private View rootView;
+    private MovieAdapter movieAdapter;
+
     public MovieFragment() {
 
     }
@@ -73,33 +78,49 @@ public class MovieFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        //execute asynctask
-        updateMovie();
+
+        List<Movie> movieList = new ArrayList<Movie>();
+        movieAdapter  = new MovieAdapter(getActivity(),movieList);
+
+        GridView gridView = (GridView)rootView.findViewById(R.id.gridview);
+        gridView.setAdapter(movieAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String movieInString = parent.getItemAtPosition(position).toString();
+                Toast.makeText(getActivity(),movieInString,Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
 
         return rootView;
     }
 
-    private void setUpImageAdapter(String[] picUrls)
-    {
+//    private void setUpImageAdapter(String[] picUrls)
+//    {
+//
+//        // TODO: 7/5/2016 create MovieAdapter here
+//        //movieAdapter = new MovieAdapter(getActivity(), movies)
+//        imageAdapter = new ImageAdapter(getActivity(), picUrls);
+//
+//        GridView gridView = (GridView)rootView.findViewById(R.id.gridview);
+//        gridView.setAdapter(imageAdapter);
+//
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            public void onItemClick(AdapterView<?> parent, View v,
+//                                    int position, long id) {
+//                Toast.makeText(getActivity(), "" + position,
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
-        // TODO: 7/5/2016 create MovieAdapter here
-        //movieAdapter = new MovieAdapter(getActivity(), movies)
-        imageAdapter = new ImageAdapter(getActivity(), picUrls);
 
-        GridView gridView = (GridView)rootView.findViewById(R.id.gridview);
-        gridView.setAdapter(imageAdapter);
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-                Toast.makeText(getActivity(), "" + position,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
+    //Execute AsyncTask
     private void updateMovie()
     {
         FetchMovieTask task = new FetchMovieTask();
@@ -122,7 +143,7 @@ public class MovieFragment extends Fragment {
         updateMovie();
     }
 
-    public class FetchMovieTask extends AsyncTask<String, Void, String[]> {
+    public class FetchMovieTask extends AsyncTask<String, Void, Movie[]> {
 
         private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
 
@@ -130,7 +151,7 @@ public class MovieFragment extends Fragment {
 
         private final String basePicURL = "http://image.tmdb.org/t/p";
         @Override
-        protected String[] doInBackground(String... params) {
+        protected Movie[] doInBackground(String... params) {
             if (params.length == 0)
                 return null;
 
@@ -210,35 +231,67 @@ public class MovieFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String[] s) {
-            setUpImageAdapter(s);
+        protected void onPostExecute(Movie[] s) {
+            //setUpImageAdapter(s);
+            if(s!=null)
+            {
+                movieAdapter.clear();
+                movieAdapter.addAll(s);
+            }
         }
 
 
-        private String[] getPicURL(String JSONString) throws JSONException
+        private Movie[] getPicURL(String JSONString) throws JSONException
         {
             // TODO: 7/5/2016 return Movie array, not just url
 
             JSONObject jsonMovie = new JSONObject(JSONString);
             JSONArray jsonMovieArray = jsonMovie.getJSONArray("results");
-
             String picSize = "w185";
 
-            String[] picUrls = new String[jsonMovieArray.length()];
+            Movie[] movies = new Movie[jsonMovieArray.length()];
+
             for(int i = 0; i< jsonMovieArray.length(); i++)
             {
                 JSONObject temp = jsonMovieArray.getJSONObject(i);
-                StringBuilder s = new StringBuilder();
 
-                s.append(basePicURL);
-                s.append("/" + picSize);
-                s.append(temp.getString("poster_path"));
+                //get pic URL
+                StringBuilder p = new StringBuilder();
+                p.append(basePicURL);
+                p.append("/" + picSize);
+                p.append(temp.getString("poster_path"));
 
-                picUrls[i] = s.toString();
+                //get date
+                Date date = getDate(temp.getString("release_date"));
+                if (date == null) throw new JSONException("Error reading date from JSON");
 
+                //get title
+                String t = temp.getString("original_title");
+                //get vote
+                String v = temp.getString("vote_average") + "/10";
+                //get summary
+                String s = temp.getString("overview");
+                movies[i] = new Movie(t,date,v,p.toString(),s);
             }
 
-            return picUrls;
+            return movies;
+        }
+
+
+        private Date getDate(String d)
+        {
+            String[] sArray = d.split("-");
+            if(sArray.length==0) return null;
+            int year = Integer.parseInt(sArray[0]);
+            int month = Integer.parseInt(sArray[1]);
+            int day = Integer.parseInt(sArray[2]);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(year,month-1,day); //months are zero-based
+
+            return calendar.getTime();
+
+
         }
     }
 
