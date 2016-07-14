@@ -1,12 +1,13 @@
 package com.anhquan.movieproject;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * Created by anhqu on 7/5/2016.
  */
-public class Movie {
+public class Movie implements Serializable{
 
     private String title;
     private String vote;
@@ -47,6 +48,11 @@ public class Movie {
         return date;
     }
 
+    public String getDateString()
+    {
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+        return format1.format(date);
+    }
     public String getTitle() {
         return title;
     }

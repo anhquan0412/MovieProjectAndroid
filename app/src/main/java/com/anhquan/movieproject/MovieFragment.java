@@ -1,5 +1,6 @@
 package com.anhquan.movieproject;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,8 +90,16 @@ public class MovieFragment extends Fragment {
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String movieInString = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getActivity(),movieInString,Toast.LENGTH_SHORT).show();
+
+                Intent detailIntent = new Intent(getActivity(),DetailActivity.class);
+                Movie movie = (Movie)parent.getItemAtPosition(position);
+
+                //can passing objects by using Parcelable
+                //http://stackoverflow.com/questions/2139134/how-to-send-an-object-from-one-android-activity-to-another-using-intents
+                detailIntent.putExtra(Intent.EXTRA_TEXT,movie);
+                startActivity(detailIntent);
+//                String movieInString = parent.getItemAtPosition(position).toString();
+//                Toast.makeText(getActivity(),movieInString,Toast.LENGTH_SHORT).show();
             }
         });
 
