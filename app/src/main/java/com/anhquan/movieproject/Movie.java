@@ -1,13 +1,15 @@
 package com.anhquan.movieproject;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * Created by anhqu on 7/5/2016.
  */
-public class Movie implements Serializable{
+public class Movie implements Parcelable{
 
     private String title;
     private String vote;
@@ -23,6 +25,42 @@ public class Movie implements Serializable{
         summary = s;
     }
 
+    public Movie(Parcel in)
+    {
+        title = in.readString();
+        this.date = new Date(in.readLong());
+        vote = in.readString();
+        picUrl = in.readString();
+        summary = in.readString();
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeLong(date.getTime());
+        dest.writeString(vote);
+        dest.writeString(picUrl);
+        dest.writeString(summary);
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>()
+    {
+        @Override
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public String getPicUrl() {
         return picUrl;

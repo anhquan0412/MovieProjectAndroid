@@ -26,7 +26,7 @@ public class DetailActivityFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            Movie movie = (Movie) intent.getSerializableExtra(Intent.EXTRA_TEXT);
+            Movie movie = (Movie) intent.getParcelableExtra(Intent.EXTRA_TEXT);
             TextView title = (TextView)rootView.findViewById(R.id.title);
             TextView date = (TextView)rootView.findViewById(R.id.date);
             TextView vote = (TextView)rootView.findViewById(R.id.vote);

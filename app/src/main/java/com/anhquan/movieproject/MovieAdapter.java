@@ -2,6 +2,7 @@ package com.anhquan.movieproject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -56,20 +57,26 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         // If not, this view already has the layout inflated from a previous call to getView,
         // and we modify the View widgets as usual.
         if (convertView == null) {
-            imageView = new ImageView(context);
-            imageView.setAdjustViewBounds(true);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(0,0,0,0);
+//            imageView = new ImageView(context);
+//            imageView.setAdjustViewBounds(true);
+//            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//            imageView.setPadding(0,0,0,0);
+
+            //inflate the movie item layout
+            convertView = LayoutInflater.from(getContext()).inflate(
+                    R.layout.movie_item_layout,parent,false);
+
         }
 
-        else {
-            imageView = (ImageView) convertView;
-        }
+//        else {
+//            imageView = (ImageView) convertView;
+//        }
+        imageView = (ImageView) convertView.findViewById(R.id.movie_image);
         String url = movie.getPicUrl();
 
         Picasso.with(context).load(url).into(imageView);
 
-        return imageView;
+        return convertView;
     }
 
 }
