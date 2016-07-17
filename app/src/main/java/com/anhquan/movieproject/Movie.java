@@ -35,6 +35,7 @@ public class Movie implements Parcelable{
     }
 
 
+    //give you a bit mash???
     @Override
     public int describeContents() {
         return 0;

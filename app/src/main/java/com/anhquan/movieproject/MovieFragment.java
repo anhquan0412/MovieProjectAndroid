@@ -29,7 +29,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -42,17 +41,32 @@ public class MovieFragment extends Fragment {
    //private ImageAdapter imageAdapter;
 
     private MovieAdapter movieAdapter;
+    private ArrayList<Movie> movieList;
 
     public MovieFragment() {
 
     }
 
+    //purpose:
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        //if savedInstanceState holds no value (first time when activity is started)
+        if(savedInstanceState==null || savedInstanceState.containsKey("movie_list"))
+            movieList = new ArrayList<Movie>();
+        else
+            movieList = savedInstanceState.getParcelableArrayList("movie_list");
 
+        Log.e(LOG_TAG,"onCreate");
+        super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("movie_list",movieList);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -78,10 +92,12 @@ public class MovieFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Log.e(LOG_TAG,"onCreateView");
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
 
-        List<Movie> movieList = new ArrayList<Movie>();
+//        movieList = new ArrayList<Movie>();
         movieAdapter  = new MovieAdapter(getActivity(),movieList);
 
         GridView gridView = (GridView)rootView.findViewById(R.id.gridview);
@@ -145,8 +161,10 @@ public class MovieFragment extends Fragment {
         task.execute(sortBy, Integer.toString(year));
     }
 
+
     @Override
     public void onStart() {
+        Log.e(LOG_TAG,"onStart");
         super.onStart();
         updateMovie();
     }
