@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:text="New Text"
         android:id="@+id/summary"
-        android:textSize="20sp"
+        android:textSize="12sp"
         android:layout_below="@+id/imageView"
         android:layout_alignParentStart="true"
         android:paddingTop="5dp" />

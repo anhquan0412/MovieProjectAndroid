@@ -51,7 +51,7 @@ public class MovieFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         //if savedInstanceState holds no value (first time when activity is started)
-        if(savedInstanceState==null || savedInstanceState.containsKey("movie_list"))
+        if(savedInstanceState==null || !savedInstanceState.containsKey("movie_list"))
             movieList = new ArrayList<Movie>();
         else
             movieList = savedInstanceState.getParcelableArrayList("movie_list");
